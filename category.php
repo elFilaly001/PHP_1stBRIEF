@@ -44,24 +44,21 @@
   <table class="table" style='margin-inline: 25px;width: 96%;margin-top: 30px; position: relative;'>
   <thead>
     <tr>
-      <th scope="col">nom utilisateur</th>
-      <th scope="col">email</th>
-      <th scope="col">position</th>
-      <th scope="col">squad</th>
-      <th scope="col">delete</th>
+      <th scope="col">nom category</th>
+      <th scope="col">ressource</th>
     </tr>
   </thead>
   <tbody>
     <?php
-    $sql = "SELECT u.UserID ,u.NomUtilisateur, u.Email,u.position, s.squad_name FROM utilisateur u left join squad s on u.squad = s.squadID";
+    $sql = "SELECT c.category_id, c.category_name , r.nom_res FROM category c  join ressource r on c.ressource_id = r.ressource_id";
     $result = $conn->query($sql);
     function show_select(){
       global $conn;
-      $sql = "select squadID,squad_name from squad";
+      $sql = "select ressource_id , nom_res from ressource";
       $result = $conn->query($sql);
      if($result){
       while ($row = $result->fetch_assoc()) {
-        echo "<option  value='" . $row['squadID'] . "'>" . $row['squad_name'] . "</option>";
+        echo "<option  value='" . $row['ressource_id'] . "'>" . $row['nom_res'] . "</option>";
     }
      }else {
       echo "Error: ".$sql."<br>".$conn->error;
@@ -70,13 +67,12 @@
     
     if ($result) {
         while ($row = $result->fetch_assoc()) {
-            $field1 = $row["NomUtilisateur"];
-            $field2 = $row["Email"];
-            $field3 = $row["position"];
-            $field4 = $row["squad_name"];
+            $field1 = $row["category_name"];
+            $field2 = $row["nom_res"];
+            
 
-            echo "<tr class='table-active'><th scope='row'><input type='hidden' class='inputID' name='userID' style='display=none' value:'".$row['UserID']."'>".$field1."</th>
-            <td>".$field2."</td><td>".$field3."</td><td>".$field4."</td><td><a href='delete.php?id=".$row["UserID"]."' class='btn btn-danger' name='deleteName'>Delete</a></td>";
+            echo "<tr class='table-active'><th scope='row'><input type='hidden' class='inputID' name='category_id' style='display=none' value:'".$row['category_id']."'>".$field1."</th>
+            <td>".$field2."</td><td><a href='delete.php?cat_id=".$row["category_id"]."' class='btn btn-danger' name='deleteName'>Delete</a></td>";
           }
     } else {
         echo "Error: ".$sql."<br>".$conn->error;
@@ -116,25 +112,14 @@
       
       <div class="row mb-3">
         <div class="col">
-  <input type="text" class="form-control" placeholder="User ID" aria-label="First name" name="ID_user">
+  <input type="text" class="form-control" placeholder="Category ID" aria-label="First name" name="ID_category">
    </div>
       <div class="col">
-    <input type="text" class="form-control" placeholder="First name" aria-label="First name" name="1st_name">
-  </div>
-  <div class="col">
-  <select class="form-select" name='Position' aria-label="Default select example">
-    <option value="leader">leader</option>
-    <option value="member">member</option>
-    <option value="chef de projet">chef de projet</option>
-    <option value="admin">admin</option>
-</select>
+    <input type="text" class="form-control" placeholder="category name" aria-label="First name" name="category_name">
   </div>
   
 </div>
-  <div class="mb-3">
-    <input type="email" class="form-control" id="exampleInputEmail" name="email" placeholder="Email" aria-describedby="emailHelp">
-  </div>
-  <select class="form-select" name='squad' aria-label="Default select example">
+  <select class="form-select" name='ressourceSelect' aria-label="Default select example">
     <?php
     $conn = mysqli_connect($servername, $username, $password, $dbname);
     show_select();
@@ -143,7 +128,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" id="quiteaddmodal" class="btn btn-secondary" data-bs-dismiss="modal" >Close</button>
-        <button type="submit" class="btn btn-primary" name="addSubmit">submit</button>
+        <button type="submit" class="btn btn-primary" name="addCatSubmit">submit</button>
       </div>
     </div>
   </div>
@@ -164,37 +149,33 @@
       <div class="modal-body">
       <div class="row mb-3">
         <div class="col">
-          <select class="form-select" aria-label="Default select example" name="upuser">
+          <select class="form-select" aria-label="Default select example" name="upcat">
             <?php
              $conn = mysqli_connect($servername, $username, $password, $dbname);
-            function show_user_select(){
+            function show_cat_select(){
               global $conn ; 
-              $sql = "select * from utilisateur";
+              $sql = "select * from category";
               $result = $conn->query($sql);
              if($result){
               while ($row = $result->fetch_assoc()) {
-                echo "<option  value='" . $row['UserID'] . "'>" . $row['NomUtilisateur'] . "</option>";
+                echo "<option  value='" . $row['category_id'] . "'>" . $row['category_name'] . "</option>";
             }
              }else {
               echo "Error: ".$sql."<br>".$conn->error;
           }
             }
-            show_user_select();
+            show_cat_select();
             ?>
           </select>
         </div>
       
   <div class="col">
-    <input type="text" class="form-control" placeholder="First name" aria-label="First name" name="up1st_name">
+    <input type="text" class="form-control" placeholder="First name"  name="up_cat_name">
   </div>
   <div class="col">
-    <input type="text" class="form-control" placeholder="Position" aria-label="Position" name="uplast_name">
   </div>
 </div>
-  <div class="mb-3">
-    <input type="email" class="form-control" id="exampleInputEmail" name="upemail" placeholder="Email" aria-describedby="emailHelp">
-  </div>
-  <div class="mb-3"><select class="form-select" name='squad' aria-label="Default select example">
+  <div class="mb-3"><select class="form-select" name='up_cat_ressource' aria-label="Default select example">
     <?php
     $conn = mysqli_connect($servername, $username, $password, $dbname);
     show_select();
@@ -205,7 +186,7 @@
 </form>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="submit" name="updateSubmit" class="btn btn-primary">submit</button>
+        <button type="submit" name="updatecatSubmit" class="btn btn-primary">submit</button>
       </div>
     </div>
   </div>

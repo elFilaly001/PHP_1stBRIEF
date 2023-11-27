@@ -21,4 +21,25 @@
         }
         $conn->close();
     }
+    if(isset($_POST['addCatSubmit'])){
+        $servername = "localhost:3306";
+        $username = "root";
+        $password = "";
+        $dbname = "sqli";
+            $conn = mysqli_connect($servername, $username, $password, $dbname);
+            $sql = "INSERT INTO category VALUES(".$_POST['ID_category']." , '".$_POST['category_name']."' , '" .$_POST['ressourceSelect']."')";
+            $result = $conn->query($sql);
+            if($result){
+                
+        ?>
+                <script>
+                    document.getElementById('quiteaddmodal').click(); 
+                </script>
+        <?php
+            header("Location: category.php");
+            } else {
+            echo "Error: ".$sql."<br>".$conn->error;
+            }
+            $conn->close();
+        }
     ?>
